@@ -10,7 +10,7 @@ import SharedLogic
 
 struct GameView: View {
     @State var loadedWeapons: [Weapon] = []
-    @State var selectedWeaponId: Int? = 1
+    @State var selectedWeaponId: Int?
     var currentWeapon: Weapon? {
         guard let selectedWeaponId = selectedWeaponId else {
             return nil
@@ -20,11 +20,11 @@ struct GameView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            Spacer().frame(height: 32)
+            Spacer().frame(height: 12)
             
             HStack {
-                Text("Loaded Weapons : [ \(loadedWeaponsText) ]")
-                    .font(.system(size: 16, weight: .bold))
+                Text("Loaded : [ \(loadedWeaponsText) ]")
+                    .font(.system(size: 22, weight: .bold))
                 
                 Spacer()
             }
@@ -35,33 +35,21 @@ struct GameView: View {
             
             Spacer()
             
-            HStack {
-                actionButton(title: "Pistol") {
-                    
-                }
-                
-                actionButton(title: "Bazooka") {
-                    
-                }
-            }
-                      
-            actionButton(title: "Reset") {
-                
-            }
+            actionButtons
             
-            Spacer()
+            Spacer().frame(height: 32)
         }
         .padding(.horizontal, 32)
         .background(.black)
         .foregroundStyle(.green)
         .task {
-            let useCase = WeaponResourceGetUseCase(weaponRepository: WeaponRepository(weaponDataSource: WeaponDataSource()))
-            do {
-                let weapon = try await useCase.execute(id: 1)
-                loadedWeapons.append(weapon)
-            } catch {
-                print(error.localizedDescription)
-            }
+//            let useCase = WeaponResourceGetUseCase(weaponRepository: WeaponRepository(weaponDataSource: WeaponDataSource()))
+//            do {
+//                let weapon = try await useCase.execute(id: 1)
+//                loadedWeapons.append(weapon)
+//            } catch {
+//                print(error.localizedDescription)
+//            }
         }
     }
     
@@ -79,6 +67,7 @@ struct GameView: View {
                     .padding(24)
             } else {
                 Text("Select any weapon.")
+                    .font(.system(size: 28, weight: .bold))
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -122,8 +111,34 @@ struct GameView: View {
         } label: {
             Text(title)
                 .font(.system(size: 24, weight: .bold))
-                .foregroundStyle(.white)
+                .padding()
+                .foregroundStyle(.black)
+                .frame(maxWidth: .infinity)
+                .frame(height: 52)
+                .background(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+    }
+    
+    var actionButtons: some View {
+        VStack(spacing: 0){
+            HStack(spacing: 0){
+                actionButton(title: "Pistol") {
+                    
+                }
+                
+                Spacer().frame(width: 12)
+                
+                actionButton(title: "Bazooka") {
+                    
+                }
+            }
             
+            Spacer().frame(height: 12)
+                      
+            actionButton(title: "Reset") {
+                
+            }
         }
     }
 }
