@@ -6,6 +6,8 @@ struct ContentView: View {
     var body: some View {
         VStack {
             Button("Click me!") {
+                
+                
                 withAnimation {
                     showContent = !showContent
                 }
