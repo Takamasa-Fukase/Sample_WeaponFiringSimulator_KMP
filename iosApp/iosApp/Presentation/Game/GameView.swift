@@ -9,14 +9,7 @@ import SwiftUI
 import SharedLogic
 
 struct GameView: View {
-    @State var loadedWeapons: [Weapon] = []
-    @State var selectedWeaponId: Int?
-    var currentWeapon: Weapon? {
-        guard let selectedWeaponId = selectedWeaponId else {
-            return nil
-        }
-        return loadedWeapons.first(where: { $0.id == selectedWeaponId })
-    }
+    @State var viewModel: GameViewModel = GameViewModel(weaponResourceGetUseCase: WeaponResourceGetUseCase(weaponRepository: WeaponRepository(weaponDataSource: WeaponDataSource())))
     
     var body: some View {
         VStack(spacing: 0) {
@@ -31,7 +24,7 @@ struct GameView: View {
             
             Spacer().frame(height: 16)
             
-            weaponDisplayArea(currentWeapon)
+            weaponDisplayArea(viewModel.currentWeapon)
             
             Spacer()
             
@@ -42,19 +35,10 @@ struct GameView: View {
         .padding(.horizontal, 32)
         .background(.black)
         .foregroundStyle(.green)
-        .task {
-//            let useCase = WeaponResourceGetUseCase(weaponRepository: WeaponRepository(weaponDataSource: WeaponDataSource()))
-//            do {
-//                let weapon = try await useCase.execute(id: 1)
-//                loadedWeapons.append(weapon)
-//            } catch {
-//                print(error.localizedDescription)
-//            }
-        }
     }
     
     var loadedWeaponsText: String {
-        return loadedWeapons.map(\.name).joined(separator: ", ")
+        return viewModel.loadedWeapons.map(\.name).joined(separator: ", ")
     }
     
     @ViewBuilder
@@ -66,8 +50,16 @@ struct GameView: View {
                     .renderingMode(.template)
                     .padding(24)
             } else {
-                Text("Select any weapon.")
-                    .font(.system(size: 28, weight: .bold))
+                if viewModel.isLoading {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .tint(.white)
+                        .scaleEffect(2)
+                    
+                } else {
+                    Text("Select any weapon.")
+                        .font(.system(size: 28, weight: .bold))
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -124,20 +116,20 @@ struct GameView: View {
         VStack(spacing: 0){
             HStack(spacing: 0){
                 actionButton(title: "Pistol") {
-                    
+                    viewModel.weaponSelected(id: 0)
                 }
                 
                 Spacer().frame(width: 12)
                 
                 actionButton(title: "Bazooka") {
-                    
+                    viewModel.weaponSelected(id: 1)
                 }
             }
             
             Spacer().frame(height: 12)
                       
             actionButton(title: "Reset") {
-                
+                viewModel.resetButtonTapped()
             }
         }
     }
