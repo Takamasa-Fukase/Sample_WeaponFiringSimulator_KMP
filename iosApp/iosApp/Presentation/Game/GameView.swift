@@ -9,7 +9,7 @@ import SwiftUI
 import SharedLogic
 
 struct GameView: View {
-    @State var viewModel: GameViewModel = GameViewModel(weaponResourceGetUseCase: WeaponResourceGetUseCase(weaponRepository: WeaponRepository(weaponDataSource: WeaponDataSource())))
+    @State var viewModel: GameViewModel
     
     var body: some View {
         VStack(spacing: 0) {
@@ -136,5 +136,5 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView()
+    GameViewBuilder.build()
 }
