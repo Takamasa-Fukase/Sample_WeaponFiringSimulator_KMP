@@ -9,10 +9,8 @@ import Foundation
 import SharedLogic
 import Combine
 
-//@MainActor
 class GamePresenter {
     private let weaponResourceGetUseCase: WeaponResourceGetUseCaseInterface
-    private var cancellables: Set<AnyCancellable> = []
     
     private let selectedWeaponIdSubject = CurrentValueSubject<Int?, Never>(nil)
     let loadedWeaponsSubject = CurrentValueSubject<[Weapon], Never>([])
