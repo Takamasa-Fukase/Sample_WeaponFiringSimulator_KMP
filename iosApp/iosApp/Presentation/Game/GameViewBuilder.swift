@@ -13,12 +13,12 @@ struct GameViewBuilder {
         let dataSource = WeaponDataSource()
         let repository = WeaponRepository(weaponDataSource: dataSource)
         let useCase = WeaponResourceGetUseCase(weaponRepository: repository)
-        let viewModel: GameViewModel = GameViewModel()
         let presenter = GamePresenter(
-            weaponResourceGetUseCase: useCase,
-            viewModel: viewModel
+            weaponResourceGetUseCase: useCase
         )
-        viewModel.inject(presenter: presenter)
+        let viewModel = GameViewModel(
+            presenter: presenter
+        )
         return GameView(viewModel: viewModel)
     }
 }

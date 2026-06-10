@@ -7,58 +7,50 @@
 
 import Foundation
 import SharedLogic
+import Combine
 
 //@MainActor
 class GamePresenter {
     private let weaponResourceGetUseCase: WeaponResourceGetUseCaseInterface
-    private var selectedWeaponId: Int?
-    private var loadedWeapons: [Weapon] = []
-    private weak var viewModel: GameViewModel?
+    private var cancellables: Set<AnyCancellable> = []
     
-    var currentWeapon: Weapon? {
-        guard let selectedWeaponId = selectedWeaponId else {
-            return nil
-        }
-        return loadedWeapons.first(where: { $0.id == selectedWeaponId })
-    }
+    private let selectedWeaponIdSubject = CurrentValueSubject<Int?, Never>(nil)
+    let loadedWeaponsSubject = CurrentValueSubject<[Weapon], Never>([])
+    let isLoadingSubject = CurrentValueSubject<Bool, Never>(false)
+    let currentWeaponPublisher: AnyPublisher<Weapon?, Never>
 
     init(
-        weaponResourceGetUseCase: WeaponResourceGetUseCaseInterface,
-        viewModel: GameViewModel
+        weaponResourceGetUseCase: WeaponResourceGetUseCaseInterface
     ) {
         self.weaponResourceGetUseCase = weaponResourceGetUseCase
-        self.viewModel = viewModel
+        currentWeaponPublisher = selectedWeaponIdSubject.combineLatest(loadedWeaponsSubject)
+            .map { (id, weapons) in
+                return weapons.first(where: { $0.id == id ?? 0 })
+            }
+            .share()
+            .eraseToAnyPublisher()
     }
     
     func weaponSelected(id: Int) {
-        selectedWeaponId = id
-//        // VMを更新
-//        viewModel?.setCurrentWeapon(
-//            loadedWeapons.first(where: { $0.id == selectedWeaponId ?? 0 })
-//        )
+        selectedWeaponIdSubject.send(id)
         
         // ロード済みの場合はスキップ
-        if loadedWeapons.contains(where: { $0.id == id }) { return }
-        
+        if loadedWeaponsSubject.value.contains(where: { $0.id == id }) { return }
+                
         Task {
-            // VMを更新
-            viewModel?.setIsLoading(true)
+            isLoadingSubject.send(true)
             do {
                 let weapon = try await weaponResourceGetUseCase.execute(id: Int32(id))
-                loadedWeapons.append(weapon)
-                // VMを更新
-                viewModel?.setLoadedWeapons(loadedWeapons)
+                let appendedList = loadedWeaponsSubject.value + [weapon]
+                loadedWeaponsSubject.send(appendedList)
             } catch {
                 print(error.localizedDescription)
             }
-            // VMを更新
-            viewModel?.setIsLoading(false)
+            isLoadingSubject.send(false)
         }
     }
     
     func resetButtonTapped() {
-        loadedWeapons.removeAll()
-        // VMを更新
-        viewModel?.setLoadedWeapons(loadedWeapons)
+        loadedWeaponsSubject.send([])
     }
 }
