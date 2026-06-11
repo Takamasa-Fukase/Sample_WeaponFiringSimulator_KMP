@@ -11,16 +11,23 @@ import Combine
 
 class GamePresenter {
     private let weaponResourceGetUseCase: WeaponResourceGetUseCaseInterface
-    
     private let selectedWeaponIdSubject = CurrentValueSubject<Int?, Never>(nil)
-    let loadedWeaponsSubject = CurrentValueSubject<[Weapon], Never>([])
-    let isLoadingSubject = CurrentValueSubject<Bool, Never>(false)
+    private let loadedWeaponsSubject = CurrentValueSubject<[Weapon], Never>([])
+    private let isLoadingSubject = CurrentValueSubject<Bool, Never>(false)
+    
+    let loadedWeaponsPublisher: AnyPublisher<[Weapon], Never>
+    let isLoadingPublisher: AnyPublisher<Bool, Never>
     let currentWeaponPublisher: AnyPublisher<Weapon?, Never>
 
     init(
         weaponResourceGetUseCase: WeaponResourceGetUseCaseInterface
     ) {
         self.weaponResourceGetUseCase = weaponResourceGetUseCase
+        
+        loadedWeaponsPublisher = loadedWeaponsSubject.eraseToAnyPublisher()
+        
+        isLoadingPublisher = isLoadingSubject.eraseToAnyPublisher()
+        
         currentWeaponPublisher = selectedWeaponIdSubject.combineLatest(loadedWeaponsSubject)
             .map { (id, weapons) in
                 return weapons.first(where: { $0.id == id ?? 0 })

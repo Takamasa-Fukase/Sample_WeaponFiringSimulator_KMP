@@ -22,13 +22,13 @@ class GameViewModel {
     init(presenter: GamePresenter) {
         self.presenter = presenter
         
-        presenter.loadedWeaponsSubject
+        presenter.loadedWeaponsPublisher
             .sink { [weak self] weapons in
                 self?.loadedWeapons = weapons
             }
             .store(in: &cancellables)
         
-        presenter.isLoadingSubject
+        presenter.isLoadingPublisher
             .sink { [weak self] isLoading in
                 self?.isLoading = isLoading
             }
