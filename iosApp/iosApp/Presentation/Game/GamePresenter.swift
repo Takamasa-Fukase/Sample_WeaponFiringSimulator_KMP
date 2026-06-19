@@ -28,7 +28,8 @@ class GamePresenter {
         
         isLoadingPublisher = isLoadingSubject.eraseToAnyPublisher()
         
-        currentWeaponPublisher = selectedWeaponIdSubject.combineLatest(loadedWeaponsSubject)
+        currentWeaponPublisher = selectedWeaponIdSubject
+            .combineLatest(loadedWeaponsSubject)
             .map { (id, weapons) in
                 return weapons.first(where: { $0.id == id ?? 0 })
             }
