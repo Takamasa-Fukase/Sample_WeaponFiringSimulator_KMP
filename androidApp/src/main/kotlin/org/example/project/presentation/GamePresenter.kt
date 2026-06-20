@@ -1,8 +1,6 @@
 package org.example.project.presentation
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -12,11 +10,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.example.project.domain.entities.Weapon
 import org.example.project.domain.useCases.WeaponResourceGetUseCaseInterface
-import kotlin.math.log
 
 class GamePresenter(
-    private val weaponResourceGetUseCase: WeaponResourceGetUseCaseInterface
-) : ViewModel() {
+    private val weaponResourceGetUseCase: WeaponResourceGetUseCaseInterface,
+    private val coroutineScope: CoroutineScope,
+) {
     private val _selectedWeaponIdFlow = MutableStateFlow<Int?>(null)
     private val _loadedWeaponsFlow = MutableStateFlow<List<Weapon>>(listOf())
     private val _isLoadingFlow = MutableStateFlow<Boolean>(false)
@@ -28,7 +26,7 @@ class GamePresenter(
             weapons.firstOrNull { it.id == (id ?: 0) }
         }
         .stateIn(
-            scope = viewModelScope,
+            scope = coroutineScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = null
         )
@@ -40,14 +38,14 @@ class GamePresenter(
             return
         }
 
-        viewModelScope.launch {
+        coroutineScope.launch {
             _isLoadingFlow.value = true
             try {
                 val weapon = weaponResourceGetUseCase.execute(id)
                 val appendedList = _loadedWeaponsFlow.value + listOf(weapon)
                 _loadedWeaponsFlow.value = appendedList
             } catch (e: Exception) {
-                Log.e("GameViewModel", "エラーが発生しました", e)
+                println("GameViewModel エラーが発生しました: $e")
             } finally {
                 _isLoadingFlow.value = false
             }

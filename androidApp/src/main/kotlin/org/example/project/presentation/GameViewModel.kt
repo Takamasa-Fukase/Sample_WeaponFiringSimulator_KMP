@@ -1,21 +1,17 @@
 package org.example.project.presentation
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import org.example.project.domain.entities.Weapon
 
 data class GameUiState(
     val loadedWeapons: List<Weapon> = emptyList(),
-    var isLoading: Boolean = false,
-    var currentWeapon: Weapon? = null
+    val isLoading: Boolean = false,
+    val currentWeapon: Weapon? = null
 )
 
 class GameViewModel(
