@@ -1,7 +1,8 @@
-package org.example.project.userInterface
+package org.example.project.userInterface.game
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -16,8 +17,9 @@ data class GameUiState(
 )
 
 class GameViewModel(
-    private val presenter: GamePresenter
+    presenterFactory: (CoroutineScope) -> GamePresenter
 ) : ViewModel() {
+    private val presenter: GamePresenter = presenterFactory(viewModelScope)
 
     val uiState: StateFlow<GameUiState> = combine(
         presenter.loadedWeaponsFlow,
