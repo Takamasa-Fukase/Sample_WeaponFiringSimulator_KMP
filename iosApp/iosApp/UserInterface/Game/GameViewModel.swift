@@ -7,42 +7,47 @@
 
 import Foundation
 import Observation
-import Combine
 import SharedLogic
 
 @Observable
 class GameViewModel {
-    private let presenter: GamePresenter
-    private var cancellables: Set<AnyCancellable> = []
-
     private(set) var loadedWeapons: [Weapon] = []
     private(set) var isLoading: Bool = false
     private(set) var currentWeapon: Weapon?
     
+    private let presenter: GamePresenter
+    private var tasks: [Task<Void, Never>] = []
+    
     init(presenter: GamePresenter) {
         self.presenter = presenter
         
-        presenter.loadedWeaponsPublisher
-            .sink { [weak self] weapons in
+        tasks.append(Task { [weak self] in
+            for await weapons in presenter.loadedWeaponsFlow {
                 self?.loadedWeapons = weapons
             }
-            .store(in: &cancellables)
+        })
         
-        presenter.isLoadingPublisher
-            .sink { [weak self] isLoading in
-                self?.isLoading = isLoading
+        tasks.append(Task { [weak self] in
+            for await isLoading in presenter.isLoadingFlow {
+                self?.isLoading = isLoading.boolValue
             }
-            .store(in: &cancellables)
+        })
         
-        presenter.currentWeaponPublisher
-            .sink { [weak self] weapon in
-                self?.currentWeapon = weapon
+        tasks.append(Task { [weak self] in
+            for await currentWeapon in presenter.currentWeaponFlow {
+                self?.currentWeapon = currentWeapon
             }
-            .store(in: &cancellables)
+        })
+    }
+    
+    deinit {
+        tasks.forEach { task in
+            task.cancel()
+        }
     }
     
     func weaponSelected(id: Int) {
-        presenter.weaponSelected(id: id)
+        presenter.weaponSelected(id: Int32(id))
     }
     
     func resetButtonTapped() {

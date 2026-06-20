@@ -10,8 +10,13 @@ import SharedLogic
 
 struct GameViewBuilder {
     static func build() -> some View {
+        let dataSource = Factory.create()
+        let presenter = SharedFactory.shared.createGamePresenter(
+            weaponDataSource: dataSource,
+            coroutineScope: IosMainScope.companion.createIosMainScope()
+        )
         let viewModel = GameViewModel(
-            presenter: Factory.create()
+            presenter: presenter
         )
         return GameView(viewModel: viewModel)
     }

@@ -12,16 +12,4 @@ struct Factory {
     static func create() -> WeaponDataSourceInterface {
         return WeaponDataSource()
     }
-    
-    static func create() -> WeaponRepositoryInterface {
-        return WeaponRepository(weaponDataSource: create())
-    }
-    
-    static func create() -> WeaponResourceGetUseCaseInterface {
-        return WeaponResourceGetUseCase(weaponRepository: create())
-    }
-    
-    static func create() -> GamePresenter {
-        return GamePresenter(weaponResourceGetUseCase: create())
-    }
 }
