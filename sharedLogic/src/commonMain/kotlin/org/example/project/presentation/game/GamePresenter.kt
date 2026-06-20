@@ -1,4 +1,4 @@
-package org.example.project.presentation
+package org.example.project.presentation.game
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow

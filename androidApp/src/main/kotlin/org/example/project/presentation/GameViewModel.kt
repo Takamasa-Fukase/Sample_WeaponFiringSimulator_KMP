@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import org.example.project.domain.entities.Weapon
+import org.example.project.presentation.game.GamePresenter
 
 data class GameUiState(
     val loadedWeapons: List<Weapon> = emptyList(),
