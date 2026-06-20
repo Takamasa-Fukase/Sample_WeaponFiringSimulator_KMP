@@ -1,8 +1,10 @@
+//import co.touchlab.skie.configuration.annotations.SealedInterop
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidMultiplatformLibrary)
+    id("co.touchlab.skie") version "0.10.12"
 }
 
 kotlin {
@@ -42,3 +44,11 @@ kotlin {
         }
     }
 }
+
+//skie {
+//    features {
+//        group {
+//            SealedInterop.Enabled()
+//        }
+//    }
+//}
