@@ -1,7 +1,6 @@
 package org.example.project.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,26 +9,29 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.example.project.domain.entities.Weapon
+import androidx.compose.ui.platform.LocalResources
 
 @Composable
 fun GameView(
@@ -88,9 +90,17 @@ fun WeaponImage(name: String?, isLoading: Boolean) {
         contentAlignment = Alignment.Center,
     ) {
         if (name != null) {
-            Text(
-                name,
-                color = Color.White
+            Icon(
+                painter = painterResource(
+                    id = LocalResources.current.getIdentifier(
+                        name,
+                        "drawable",
+                        LocalContext.current.packageName
+                    )
+                ),
+                contentDescription = "Weapon Icon",
+                tint = Color.White,
+                modifier = Modifier.padding(24.dp)
             )
 
         } else {
@@ -154,7 +164,7 @@ fun ActionButton(
     modifier: Modifier,
     action: (() -> Unit)
 ) {
-    Button (
+    Button(
         onClick = action,
         modifier = modifier
             .height(52.dp),
