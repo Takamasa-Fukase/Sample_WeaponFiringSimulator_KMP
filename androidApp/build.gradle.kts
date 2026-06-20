@@ -13,10 +13,11 @@ kotlin {
 }
 dependencies {
     implementation(projects.sharedUI)
-
     implementation(libs.androidx.activity.compose)
-
+    implementation(libs.compose.ui)
     implementation(libs.compose.uiToolingPreview)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.compose.material3)
     debugImplementation(libs.compose.uiTooling)
 }
 
@@ -44,5 +45,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        compose = true
     }
 }
