@@ -9,11 +9,12 @@ import org.example.project.SharedLogicFactory
 
 @Composable
 fun GameViewBuilder() {
+    val dataSource = Factory.createWeaponDataSource()
     val vmFactory = viewModelFactory {
         initializer {
             GameViewModel(presenterFactory = { scope ->
                 SharedLogicFactory.createGamePresenter(
-                    Factory.createWeaponDataSource(),
+                    dataSource,
                     scope
                 )
             })
