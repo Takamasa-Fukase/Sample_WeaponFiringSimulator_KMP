@@ -1,4 +1,3 @@
-//import co.touchlab.skie.configuration.annotations.SealedInterop
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -44,11 +43,3 @@ kotlin {
         }
     }
 }
-
-//skie {
-//    features {
-//        group {
-//            SealedInterop.Enabled()
-//        }
-//    }
-//}
