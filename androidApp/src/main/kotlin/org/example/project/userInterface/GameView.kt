@@ -1,4 +1,4 @@
-package org.example.project.presentation
+package org.example.project.userInterface
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
