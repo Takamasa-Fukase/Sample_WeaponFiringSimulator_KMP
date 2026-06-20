@@ -12,7 +12,7 @@ struct GameViewBuilder {
     static func build() -> some View {
         let dataSource = Factory.create()
         let mainScope = IosCoroutineScopeKt.createMainScope()
-        let presenter = SharedLogicFactory.shared.createGamePresenter(
+        let presenter = SharedLogicFactory.companion.createGamePresenter(
             weaponDataSource: dataSource,
             coroutineScope: mainScope
         )
