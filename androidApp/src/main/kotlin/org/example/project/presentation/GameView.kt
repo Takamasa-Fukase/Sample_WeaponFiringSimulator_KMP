@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,12 +38,14 @@ fun GameView(
     val loadedWeaponsText: String = state.loadedWeapons.joinToString(separator = ", ") { it.name }
 
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        color = Color.Black,
+        modifier = Modifier
+            .fillMaxSize(),
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 32.dp)
-                .background(Color.Black)
+                .safeContentPadding()
+//                .padding(horizontal = 32.dp)
         ) {
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -64,7 +69,7 @@ fun GameView(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            actionButtons(viewModel = viewModel)
+            ActionButtons(viewModel = viewModel)
 
             Spacer(modifier = Modifier.height(32.dp))
         }
@@ -75,12 +80,12 @@ fun GameView(
 fun WeaponImage(name: String?, isLoading: Boolean) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
             .background(Color.Green)
             .aspectRatio(
                 ratio = 1f,
                 matchHeightConstraintsFirst = true
-            )
+            ),
+        contentAlignment = Alignment.Center,
     ) {
         if (name != null) {
             Text(
@@ -138,14 +143,20 @@ fun WeaponDisplayArea(weapon: Weapon?, isLoading: Boolean) {
 }
 
 @Composable
-fun actionButton(title: String, action: (() -> Unit)) {
-    Button(
+fun ActionButton(
+    title: String,
+    modifier: Modifier,
+    action: (() -> Unit)
+) {
+    Button (
         onClick = action,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(52.dp)
-            .background(Color.White)
-            .clip(RoundedCornerShape(10.dp))
+        modifier = modifier
+            .height(52.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = Color.Black,
+        ),
+        shape = RoundedCornerShape(size = 10.dp)
     ) {
         Text(
             title,
@@ -157,20 +168,34 @@ fun actionButton(title: String, action: (() -> Unit)) {
 }
 
 @Composable
-fun actionButtons(viewModel: GameViewModel) {
-    Column {
+fun ActionButtons(viewModel: GameViewModel) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Row {
-            actionButton(title = "Pistol") {
+            ActionButton(
+                title = "Pistol",
+                modifier = Modifier.weight(1f),
+            ) {
                 viewModel.weaponSelected(id = 0)
             }
-            actionButton(title = "Bazooka") {
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            ActionButton(
+                title = "Bazooka",
+                modifier = Modifier.weight(1f),
+            ) {
                 viewModel.weaponSelected(id = 1)
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        actionButton(title = "Reset") {
+        ActionButton(
+            title = "Reset",
+            modifier = Modifier.fillMaxWidth(),
+        ) {
             viewModel.resetButtonTapped()
         }
     }
