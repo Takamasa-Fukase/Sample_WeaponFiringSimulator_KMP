@@ -85,7 +85,6 @@ fun WeaponImage(name: String?, isLoading: Boolean) {
             .background(Color.Green)
             .aspectRatio(
                 ratio = 1f,
-                matchHeightConstraintsFirst = true
             ),
         contentAlignment = Alignment.Center,
     ) {
@@ -100,7 +99,9 @@ fun WeaponImage(name: String?, isLoading: Boolean) {
                 ),
                 contentDescription = "Weapon Icon",
                 tint = Color.White,
-                modifier = Modifier.padding(24.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp)
             )
 
         } else {
