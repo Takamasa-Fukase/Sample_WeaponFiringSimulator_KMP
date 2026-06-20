@@ -1,6 +1,7 @@
 package org.example.project.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +46,6 @@ fun GameView(
         Column(
             modifier = Modifier
                 .safeContentPadding()
-//                .padding(horizontal = 32.dp)
         ) {
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -134,10 +134,16 @@ fun SpecText(title: String, value: String) {
 fun WeaponDisplayArea(weapon: Weapon?, isLoading: Boolean) {
     val capacityText = weapon?.capacity?.let { "$it bullets" } ?: " - "
     Column(
-        horizontalAlignment = Alignment.Start
+        horizontalAlignment = Alignment.Start,
     ) {
         WeaponImage(name = weapon?.imageName, isLoading = isLoading)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         SpecText(title = "Name : ", value = weapon?.name ?: " - ")
+
+        Spacer(modifier = Modifier.height(4.dp))
+
         SpecText(title = "Capacity : ", value = capacityText)
     }
 }
