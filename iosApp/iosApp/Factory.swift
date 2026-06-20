@@ -9,6 +9,8 @@ import Foundation
 import SharedLogic
 
 struct Factory {
+    private init() {}
+    
     static func create() -> WeaponDataSourceInterface {
         return WeaponDataSource()
     }

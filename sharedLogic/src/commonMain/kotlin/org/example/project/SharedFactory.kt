@@ -8,7 +8,7 @@ import org.example.project.domain.useCases.WeaponResourceGetUseCase
 import org.example.project.domain.useCases.WeaponResourceGetUseCaseInterface
 import org.example.project.presentation.game.GamePresenter
 
-object SharedFactory {
+object SharedLogicFactory {
     fun createWeaponRepository(
         weaponDataSource: WeaponDataSourceInterface
     ): WeaponRepositoryInterface {

@@ -16,10 +16,15 @@ class GameViewModel {
     private(set) var currentWeapon: Weapon?
     
     private let presenter: GamePresenter
+    private let coroutineCancelHandler: (() -> Void)?
     private var tasks: [Task<Void, Never>] = []
     
-    init(presenter: GamePresenter) {
+    init(
+        presenter: GamePresenter,
+        coroutineCancelHandler: (() -> Void)?
+    ) {
         self.presenter = presenter
+        self.coroutineCancelHandler = coroutineCancelHandler
         
         tasks.append(Task { [weak self] in
             for await weapons in presenter.loadedWeaponsFlow {
@@ -41,6 +46,7 @@ class GameViewModel {
     }
     
     deinit {
+        coroutineCancelHandler?()
         tasks.forEach { task in
             task.cancel()
         }

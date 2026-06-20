@@ -11,12 +11,16 @@ import SharedLogic
 struct GameViewBuilder {
     static func build() -> some View {
         let dataSource = Factory.create()
-        let presenter = SharedFactory.shared.createGamePresenter(
+        let mainScope = IosCoroutineScopeKt.createMainScope()
+        let presenter = SharedLogicFactory.shared.createGamePresenter(
             weaponDataSource: dataSource,
-            coroutineScope: IosMainScope.companion.createIosMainScope()
+            coroutineScope: mainScope
         )
         let viewModel = GameViewModel(
-            presenter: presenter
+            presenter: presenter,
+            coroutineCancelHandler: { [weak mainScope] in
+                IosCoroutineScopeKt.cancel(scope: mainScope)
+            }
         )
         return GameView(viewModel: viewModel)
     }
